@@ -292,8 +292,8 @@ class Solver(object):
 
                         img_genX = nib.Nifti1Image(np.array(gen_X)[0,0,:,:,:], affine)
 
-                        f = plt.figure(figsize = (10, 10))
-                        plotting.plot_glass_brain(img_genX, cmap=nilearn_cmaps['cold_hot'], 
+                        fig = plt.figure(figsize = (10, 10))
+                        plotting.plot_glass_brain(img_genX, figure=fig, cmap=nilearn_cmaps['cold_hot'], 
                             plot_abs=False, title='Generated')
                         plt.savefig(f'{self.sample_dir}/iter-{i}_img-{c_n}.png')
                         #nib.save(img_genX, f'{self.sample_dir}/iter-{i}_img-{c_n}.nii')
