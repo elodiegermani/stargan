@@ -154,7 +154,7 @@ class Solver(object):
         data_iter = iter(data_loader)
         x_fixed, c_org = next(data_iter)
         x_fixed = x_fixed.to(self.device)
-        c_fixed_list = [self.label2onehot(c, dim=24) for c in range(24)]#c_org.to(self.device)#self.create_labels(c_org, self.c_dim)
+        c_fixed_list = c_org.to(self.device)#self.create_labels(c_org, self.c_dim)
 
         # Learning rate cache for decaying.
         g_lr = self.g_lr
@@ -184,7 +184,7 @@ class Solver(object):
 
             # Generate target domain labels randomly.
             rand_idx = torch.randperm(label_org.size(0))
-            label_trg = self.label2onehot(label_trg, 24)
+            label_trg = self.label2onehot(rand_idx, 24)
 
             c_org = label_org #self.label2onehot(label_org, self.c_dim)
             c_trg = label_trg #self.label2onehot(label_trg, self.c_dim)
@@ -274,7 +274,7 @@ class Solver(object):
                     x_fake_list = [x_fixed]
                     for c_fixed in c_fixed_list:
                         x_fake_list.append(self.G(x_fixed.float(), c_fixed.float()))
-                    x_concat = torch.cat(x_fake_list, dim=3)
+                    x_concat = torch.cat(x_fake_list, dim=4)
                     sample_path = os.path.join(self.sample_dir, '{}-images.jpg'.format(i+1))
                     save_image(self.denorm(x_concat.data.cpu()), sample_path, nrow=1, padding=0)
                     print('Saved real and fake images into {}...'.format(sample_path))
