@@ -136,7 +136,7 @@ class Solver(object):
         c_trg_list = []
 
         for i in range(c_dim):
-            c_trg = torch.ones(c_org.size(0))*i, c_dim#self.label2onehot(torch.ones(c_org.size(0))*i, c_dim)
+            c_trg = self.label2onehot(torch.ones(c_org.size(0))*i, c_dim)
             c_trg_list.append(c_trg.to(self.device))
 
         return c_trg_list
@@ -154,7 +154,7 @@ class Solver(object):
         data_iter = iter(data_loader)
         x_fixed, c_org = next(data_iter)
         x_fixed = x_fixed.to(self.device)
-        c_fixed_list = c_org.to(self.device)#self.create_labels(c_org, self.c_dim)
+        c_fixed_list = self.create_labels(c_org, self.c_dim)
 
         # Learning rate cache for decaying.
         g_lr = self.g_lr
@@ -276,7 +276,7 @@ class Solver(object):
 
                     for c_fixed in c_fixed_list:
                         print(c_fixed)
-                        gen_X = self.G(x_fixed.float(), torch.Tensor(1, c_fixed).float())
+                        gen_X = self.G(x_fixed.float(), c_fixed.float())
                         x_fake_list.append(gen_X)
 
                     x_concat = torch.cat(x_fake_list, dim=4)
