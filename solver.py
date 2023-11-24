@@ -270,18 +270,25 @@ class Solver(object):
 
             # Translate fixed images for debugging.
             if (i+1) % self.sample_step == 0:
+
+                affine = np.array([[   4.,    0.,    0.,  -98.],
+                                   [   0.,    4.,    0., -134.],
+                                   [   0.,    0.,    4.,  -72.],
+                                   [   0.,    0.,    0.,    1.]])
+
                 with torch.no_grad():
 
                     x_fake_list = [x_fixed]
 
-                    for c_fixed in c_fixed_list:
+                    for c_n, c_fixed in enumerate(c_fixed_list):
                         print(c_fixed)
                         gen_X = self.G(x_fixed.float(), c_fixed.float())
-                        x_fake_list.append(gen_X)
+                        generated_img = gen_X[0].float() * np.array(x_fixed[0].float() != 0).astype('float')
+                        generated_img[np.logical_or(x_fixed[0].float() == 0, np.isnan(x_fixed[0].float()))] = 0
 
-                    x_concat = torch.cat(x_fake_list, dim=4)
-                    sample_path = os.path.join(self.sample_dir, '{}-images.jpg'.format(i+1))
-                    save_image(self.denorm(x_concat.data.cpu()), sample_path, nrow=1, padding=0)
+                        img_genX = nib.Nifti1Image(np.array(generated_img)[0,0,:,:,:], affine)
+                        nib.save(img_genX, f'{sample_path}/img-{c_n}.nii')
+
                     print('Saved real and fake images into {}...'.format(sample_path))
 
             # Save model checkpoints.
