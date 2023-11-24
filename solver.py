@@ -11,7 +11,7 @@ import os
 import time
 import datetime
 import nibabel as nib
-import matplotlib as plt 
+import matplotlib.pyplot as plt 
 
 
 class Solver(object):
