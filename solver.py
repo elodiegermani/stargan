@@ -184,7 +184,7 @@ class Solver(object):
 
             # Generate target domain labels randomly.
             rand_idx = torch.randperm(label_org.size(0))
-            label_trg = self.label2onehot(rand_idx, 24)
+            label_trg = label_org[rand_idx]
 
             c_org = label_org #self.label2onehot(label_org, self.c_dim)
             c_trg = label_trg #self.label2onehot(label_trg, self.c_dim)
@@ -271,9 +271,14 @@ class Solver(object):
             # Translate fixed images for debugging.
             if (i+1) % self.sample_step == 0:
                 with torch.no_grad():
+
                     x_fake_list = [x_fixed]
+
                     for c_fixed in c_fixed_list:
-                        x_fake_list.append(self.G(x_fixed.float(), c_fixed.float()))
+                        print(c_fixed)
+                        gen_X = self.G(x_fixed.float(), torch.Tensor(1, c_fixed).float())
+                        x_fake_list.append(gen_X)
+
                     x_concat = torch.cat(x_fake_list, dim=4)
                     sample_path = os.path.join(self.sample_dir, '{}-images.jpg'.format(i+1))
                     save_image(self.denorm(x_concat.data.cpu()), sample_path, nrow=1, padding=0)
