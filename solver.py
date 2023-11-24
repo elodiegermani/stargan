@@ -282,9 +282,9 @@ class Solver(object):
 
                     for c_n, c_fixed in enumerate(c_fixed_list):
                         print(c_fixed)
-                        gen_X = self.G(x_fixed.float(), c_fixed.float())
-                        generated_img = gen_X[0].float() * np.array(x_fixed[0].float() != 0).astype('float')
-                        generated_img[np.logical_or(x_fixed[0].float() == 0, np.isnan(x_fixed[0].float()))] = 0
+                        gen_X = self.G(x_fixed.float(), c_fixed.float()).detach().cpu()
+                        generated_img = gen_X[0].cpu() * np.array(x_fixed.cpu()[0] != 0).astype('float')
+                        generated_img[np.logical_or(x_fixed.cpu()[0] == 0, np.isnan(x_fixed.cpu()[0]))] = 0
 
                         img_genX = nib.Nifti1Image(np.array(generated_img)[0,0,:,:,:], affine)
                         nib.save(img_genX, f'{sample_path}/img-{c_n}.nii')
