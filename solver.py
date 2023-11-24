@@ -2,6 +2,8 @@ from model import Generator
 from model import Discriminator
 from torch.autograd import Variable
 from torchvision.utils import save_image
+from nilearn import plotting
+from nilearn.plotting.cm import _cmap_d as nilearn_cmaps
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -9,6 +11,7 @@ import os
 import time
 import datetime
 import nibabel as nib
+import matplotlib as plt 
 
 
 class Solver(object):
@@ -288,7 +291,12 @@ class Solver(object):
                         #generated_img[np.logical_or(x_fixed.cpu()[0] == 0, np.isnan(x_fixed.cpu()[0]))] = 0
 
                         img_genX = nib.Nifti1Image(np.array(gen_X)[0,0,:,:,:], affine)
-                        nib.save(img_genX, f'{self.sample_dir}/img-{c_n}.nii')
+
+                        f = plt.figure(figsize = (10, 10))
+                        plotting.plot_glass_brain(img_genX, cmap=nilearn_cmaps['cold_hot'], 
+                            plot_abs=False, title='Generated')
+                        plt.savefig(f'{self.sample_dir}/iter-{i}_img-{c_n}.png')
+                        #nib.save(img_genX, f'{self.sample_dir}/iter-{i}_img-{c_n}.nii')
 
                     print('Saved real and fake images into {}...'.format(self.sample_dir))
 
