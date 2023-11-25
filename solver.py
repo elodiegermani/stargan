@@ -285,7 +285,6 @@ class Solver(object):
                     x_fake_list = [x_fixed]
 
                     for c_n, c_fixed in enumerate(c_fixed_list):
-                        print(c_fixed)
                         gen_X = self.G(x_fixed.float(), c_fixed.float()).detach().cpu()
                         #generated_img = gen_X[0].cpu() * np.array(x_fixed.cpu()[0] != 0).astype('float')
                         #generated_img[np.logical_or(x_fixed.cpu()[0] == 0, np.isnan(x_fixed.cpu()[0]))] = 0
