@@ -286,8 +286,6 @@ class Solver(object):
 
                     for c_n, c_fixed in enumerate(c_fixed_list):
                         gen_X = self.G(x_fixed.float(), c_fixed.float()).detach().cpu()
-                        #generated_img = gen_X[0].cpu() * np.array(x_fixed.cpu()[0] != 0).astype('float')
-                        #generated_img[np.logical_or(x_fixed.cpu()[0] == 0, np.isnan(x_fixed.cpu()[0]))] = 0
 
                         img_genX = nib.Nifti1Image(np.array(gen_X)[0,0,:,:,:], affine)
 
@@ -315,28 +313,71 @@ class Solver(object):
                 print ('Decayed learning rates, g_lr: {}, d_lr: {}.'.format(g_lr, d_lr))
 
 
-    def test(self):
+    def test(self, test_dataset):
         """Translate images using StarGAN trained on a single dataset."""
         # Load the trained generator.
         self.restore_model(self.test_iters)
         
         # Set data loader.
         data_loader = self.data_loader
+
+        affine = np.array([[   4.,    0.,    0.,  -98.],
+                           [   0.,    4.,    0., -134.],
+                           [   0.,    0.,    4.,  -72.],
+                           [   0.,    0.,    0.,    1.]])
         
         with torch.no_grad():
             for i, (x_real, c_org) in enumerate(data_loader):
 
                 # Prepare input images and target domain labels.
                 x_real = x_real.to(self.device)
-                c_trg_list = c_org.to(self.device)#self.create_labels(c_org, self.c_dim)
+                c_trg_list = self.create_labels(c_org, self.c_dim)
 
                 # Translate images.
                 x_fake_list = [x_real]
-                for c_trg in c_trg_list:
-                    x_fake_list.append(self.G(x_real, c_trg))
+
+
+                for c, c_trg in enumerate(c_trg_list):
+
+                    fig,ax = plt.subplots(3,1, figsize=(7, 12))
+                    idx_org = torch.argmax(
+                        c_org, dim=1).cpu()
+
+                    img_orgX = nib.Nifti1Image(
+                            np.array(x_real.detach().cpu())[0,0,:,:,:], 
+                            affine
+                            )
+
+                    plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
+                    cmap=nilearn_cmaps['cold_hot'], 
+                    plot_abs=False, title=f'Original, classe {idx_org[0]}')
+
+                    gen_X = self.G(x_real.float(), c_trg.float()).detach().cpu()
+
+                    gen_X_data = np.array(gen_X)[0,0,:,:,:]
+                    gen_X_data = gen_X_data * np.array(img_orgX.get_fdata() != 0).astype('float')
+
+                    img_genX = nib.Nifti1Image(gen_X_data, affine)
+                    
+                    idx_trg = torch.argmax(c_trg, dim=1).cpu()[0]
+
+
+                    plotting.plot_glass_brain(img_genX, figure=fig, axes=ax[1],
+                        cmap=nilearn_cmaps['cold_hot'], 
+                        plot_abs=False, title=f'Generated, classe {idx_trg}')
+
+                    target_data, target_class = test_dataset[i+idx_trg]
+
+                    target_img = nib.Nifti1Image(np.array(target_data)[0,:,:,:], affine)
+
+                    plotting.plot_glass_brain(target_img, figure=fig, axes=ax[2],
+                        cmap=nilearn_cmaps['cold_hot'], 
+                        plot_abs=False, title=f'Target, classe {idx_trg}')
+                    
+                    plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{idx_org[0]}_target-{idx_trg}.png')
 
                 # Save the translated images.
-                x_concat = torch.cat(x_fake_list, dim=3)
-                result_path = os.path.join(self.result_dir, '{}-images.jpg'.format(i+1))
-                save_image(self.denorm(x_concat.data.cpu()), result_path, nrow=1, padding=0)
-                print('Saved real and fake images into {}...'.format(result_path))
+                # x_concat = torch.cat(x_fake_list, dim=3)
+                # result_path = os.path.join(self.result_dir, '{}-images.jpg'.format(i+1))
+                # save_image(self.denorm(x_concat.data.cpu()), result_path, nrow=1, padding=0)
+                # print('Saved real and fake images into {}...'.format(result_path))

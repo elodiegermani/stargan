@@ -31,19 +31,26 @@ def main(config):
         config.labels)
 
     print(f'Dataset {config.dataset}: \n {len(dataset)} images.')
-    print(f'Labels: {dataset.get_original_labels()}')
-    print(f'{dataset[0][1]}')
 
     data_loader = DataLoader(
         dataset, 
         batch_size=config.batch_size,
         shuffle=True)
     
+    if config.mode == 'test':
+        
+        data_loader = DataLoader(
+        dataset, 
+        batch_size=config.batch_size,
+        shuffle=False)
+
     # Solver for training and testing StarGAN.
     solver = Solver(data_loader, config)
 
     if config.mode == 'train':
         solver.train()
+    elif config.mode == 'test':
+        solver.test(dataset)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -74,7 +81,7 @@ if __name__ == '__main__':
                         default='pipelines')
 
     # Test configuration.
-    parser.add_argument('--test_iters', type=int, default=200000, help='test model from this step')
+    parser.add_argument('--test_iters', type=int, default=35000, help='test model from this step')
 
     # Miscellaneous.
     parser.add_argument('--num_workers', type=int, default=1)

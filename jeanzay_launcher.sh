@@ -14,6 +14,6 @@ source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh
 
 /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u /gpfswork/rech/gft/umh25bv/stargan/main.py \
 --mode train --dataset dataset_rh-jeanzay --labels pipelines --image_size 56 \
---c_dim 24 --batch_size 2 --data_dir data \
+--c_dim 24 --batch_size 32 --data_dir data \
 --sample_dir samples --log_dir logs \
---model_save_dir models --result_dir results
+--model_save_dir models --result_dir results 
