@@ -293,6 +293,7 @@ class Solver(object):
                         plotting.plot_glass_brain(img_genX, figure=fig, cmap=nilearn_cmaps['cold_hot'], 
                             plot_abs=False, title='Generated')
                         plt.savefig(f'{self.sample_dir}/iter-{i}_img-{c_n}.png')
+                        plt.close()
                         #nib.save(img_genX, f'{self.sample_dir}/iter-{i}_img-{c_n}.nii')
 
                     print('Saved real and fake images into {}...'.format(self.sample_dir))
@@ -375,6 +376,7 @@ class Solver(object):
                         plot_abs=False, title=f'Target, classe {idx_trg}')
                     
                     plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{idx_org[0]}_target-{idx_trg}.png')
+                    plt.close()
 
                 # Save the translated images.
                 # x_concat = torch.cat(x_fake_list, dim=3)
