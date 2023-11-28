@@ -3,12 +3,13 @@
 #SBATCH --ntasks=1                   # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
-#SBATCH --cpus-per-task=10           # number of cores per tasks
+#SBATCH --cpus-per-task=16           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --distribution=block:block   # we pin the tasks on contiguous cores
-#SBATCH --time=19:00:00              # maximum execution time (HH:MM:SS)
+#SBATCH --time=90:00:00              # maximum execution time (HH:MM:SS)
 #SBATCH --output=stargan%j.out # output file name
 #SBATCH --error=stargan%j.err  # error file name
+#SBATCH --qos=qos_gpu-t4
 
 source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv
 

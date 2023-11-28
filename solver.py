@@ -12,6 +12,33 @@ import time
 import datetime
 import nibabel as nib
 import matplotlib.pyplot as plt 
+import pandas as pd
+
+
+def get_correlation(inim, outim):
+        '''
+        Compute the Pearson's correlation coefficient between original and reconstructed images.
+        '''
+        #orig, repro = utils.mask_using_original(inim, outim)
+        
+        data1 = inim.get_fdata().copy()
+        data2 = outim.get_fdata().copy()
+        
+        # Vectorise input data
+        data1 = np.reshape(data1, -1)
+        data2 = np.reshape(data2, -1)
+
+        in_mask_indices = np.logical_not(
+            np.logical_or(
+                np.logical_or(np.isnan(data1), np.absolute(data1) == 0),
+                np.logical_or(np.isnan(data2), np.absolute(data2) == 0)))
+
+        data1 = data1[in_mask_indices]
+        data2 = data2[in_mask_indices]
+        
+        corr_coeff = np.corrcoef(data1, data2)[0][1]
+        
+        return corr_coeff
 
 
 class Solver(object):
@@ -313,7 +340,6 @@ class Solver(object):
                 self.update_lr(g_lr, d_lr)
                 print ('Decayed learning rates, g_lr: {}, d_lr: {}.'.format(g_lr, d_lr))
 
-
     def test(self, test_dataset):
         """Translate images using StarGAN trained on a single dataset."""
         # Load the trained generator.
@@ -326,6 +352,10 @@ class Solver(object):
                            [   0.,    4.,    0., -134.],
                            [   0.,    0.,    4.,  -72.],
                            [   0.,    0.,    0.,    1.]])
+
+        df_metrics = pd.DataFrame(
+            columns = ['orig_label', 'target_label', 'orig-target', 'orig-gen', 'gen-target']
+            )
         
         with torch.no_grad():
             for i, (x_real, c_org) in enumerate(data_loader):
@@ -351,7 +381,7 @@ class Solver(object):
 
                     plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
                     cmap=nilearn_cmaps['cold_hot'], 
-                    plot_abs=False, title=f'Original, classe {idx_org[0]}')
+                    plot_abs=False, title=f'Original, classe {test_dataset.label_list[idx_org[0]]}')
 
                     gen_X = self.G(x_real.float(), c_trg.float()).detach().cpu()
 
@@ -365,7 +395,7 @@ class Solver(object):
 
                     plotting.plot_glass_brain(img_genX, figure=fig, axes=ax[1],
                         cmap=nilearn_cmaps['cold_hot'], 
-                        plot_abs=False, title=f'Generated, classe {idx_trg}')
+                        plot_abs=False, title=f'Generated, classe {test_dataset.label_list[idx_trg]}')
 
                     target_data, target_class = test_dataset[i+idx_trg]
 
@@ -375,8 +405,29 @@ class Solver(object):
                         cmap=nilearn_cmaps['cold_hot'], 
                         plot_abs=False, title=f'Target, classe {idx_trg}')
                     
-                    plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{idx_org[0]}_target-{idx_trg}.png')
+                    plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.png')
                     plt.close()
+
+                    corr_orig_target = get_correlation(img_orgX, target_img)
+                    corr_orig_gen = get_correlation(img_orgX, img_genX)
+                    corr_gen_target = get_correlation(img_genX, target_img)
+
+                    df_img = pd.DataFrame({
+                        'orig_label': [test_dataset.label_list[idx_org[0]]],
+                        'target_label': [test_dataset.label_list[idx_trg]],
+                        'orig-target': [corr_orig_target],
+                        'orig-gen': [corr_orig_gen],
+                        'gen-target': [corr_gen_target]
+                        })
+
+                    print(df_img)
+
+                    df_metrics = pd.concat(
+                        [df_metrics, df_img], 
+                        ignore_index=True
+                        ) 
+
+            df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
 
                 # Save the translated images.
                 # x_concat = torch.cat(x_fake_list, dim=3)
