@@ -380,7 +380,7 @@ class Solver(object):
                             )
 
                     plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
-                    cmap=nilearn_cmaps['cold_hot'], 
+                    cmap=nilearn_cmaps['cold_hot'], colorbar=True,
                     plot_abs=False, title=f'Original, classe {test_dataset.label_list[idx_org[0]]}')
 
                     gen_X = self.G(x_real.float(), c_trg.float()).detach().cpu()
@@ -394,7 +394,7 @@ class Solver(object):
 
 
                     plotting.plot_glass_brain(img_genX, figure=fig, axes=ax[1],
-                       cmap=nilearn_cmaps['cold_hot'], 
+                       cmap=nilearn_cmaps['cold_hot'], colorbar=True, vmin=-1, vmax=1,
                        plot_abs=False, title=f'Generated, classe {test_dataset.label_list[idx_trg]}')
 
                     target_data, target_class = test_dataset[i+idx_trg]
@@ -402,8 +402,8 @@ class Solver(object):
                     target_img = nib.Nifti1Image(np.array(target_data)[0,:,:,:], affine)
 
                     plotting.plot_glass_brain(target_img, figure=fig, axes=ax[2],
-                       cmap=nilearn_cmaps['cold_hot'], 
-                       plot_abs=False, title=f'Target, classe {idx_trg}')
+                       cmap=nilearn_cmaps['cold_hot'], colorbar=True,
+                       plot_abs=False, title=f'Target, classe {test_dataset.label_list[idx_trg]}')
                     
                     plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.png')
                     plt.close()
