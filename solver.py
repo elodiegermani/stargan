@@ -397,7 +397,7 @@ class Solver(object):
                        cmap=nilearn_cmaps['cold_hot'], colorbar=True, vmin=-1, vmax=1,
                        plot_abs=False, title=f'Generated, classe {test_dataset.label_list[idx_trg]}')
 
-                    target_data, target_class = test_dataset[i+idx_trg]
+                    target_data, target_class = test_dataset[i//self.c_dim*self.c_dim+c]
 
                     target_img = nib.Nifti1Image(np.array(target_data)[0,:,:,:], affine)
 
