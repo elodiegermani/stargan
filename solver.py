@@ -379,10 +379,6 @@ class Solver(object):
                             affine
                             )
 
-                    plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
-                    cmap=nilearn_cmaps['cold_hot'], colorbar=True,
-                    plot_abs=False, title=f'Original, classe {test_dataset.label_list[idx_org[0]]}')
-
                     gen_X = self.G(x_real.float(), c_trg.float()).detach().cpu()
 
                     gen_X_data = np.array(gen_X)[0,0,:,:,:]
@@ -392,21 +388,26 @@ class Solver(object):
                     
                     idx_trg = torch.argmax(c_trg, dim=1).cpu()[0]
 
-
-                    plotting.plot_glass_brain(img_genX, figure=fig, axes=ax[1],
-                       cmap=nilearn_cmaps['cold_hot'], colorbar=True, vmin=-1, vmax=1,
-                       plot_abs=False, title=f'Generated, classe {test_dataset.label_list[idx_trg]}')
-
                     target_data, target_class = test_dataset[i//self.c_dim*self.c_dim+c]
 
                     target_img = nib.Nifti1Image(np.array(target_data)[0,:,:,:], affine)
 
-                    plotting.plot_glass_brain(target_img, figure=fig, axes=ax[2],
-                       cmap=nilearn_cmaps['cold_hot'], colorbar=True,
-                       plot_abs=False, title=f'Target, classe {test_dataset.label_list[idx_trg]}')
-                    
-                    plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.png')
-                    plt.close()
+                    if i%50==0:
+
+                        plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
+                        cmap=nilearn_cmaps['cold_hot'], colorbar=True,
+                        plot_abs=False, title=f'Original, classe {test_dataset.label_list[idx_org[0]]}')
+
+                        plotting.plot_glass_brain(img_genX, figure=fig, axes=ax[1],
+                           cmap=nilearn_cmaps['cold_hot'], colorbar=True, vmin=-1, vmax=1,
+                           plot_abs=False, title=f'Generated, classe {test_dataset.label_list[idx_trg]}')
+
+                        plotting.plot_glass_brain(target_img, figure=fig, axes=ax[2],
+                           cmap=nilearn_cmaps['cold_hot'], colorbar=True,
+                           plot_abs=False, title=f'Target, classe {test_dataset.label_list[idx_trg]}')
+                        
+                        plt.savefig(f'{self.sample_dir}/test_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.png')
+                        plt.close()
 
                     corr_orig_target = get_correlation(img_orgX, target_img)
                     corr_orig_gen = get_correlation(img_orgX, img_genX)
