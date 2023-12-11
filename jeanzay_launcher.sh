@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=stargan-4classes # nom du job
+#SBATCH --job-name=stargan-test # nom du job
 #SBATCH --ntasks=1                   # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -9,6 +9,8 @@
 #SBATCH --time=20:00:00              # maximum execution time (HH:MM:SS)
 #SBATCH --output=stargan%j.out # output file name
 #SBATCH --error=stargan%j.err  # error file name
+#SBATCH --qos=qos_gpu-t4
+
 
 source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv
 
