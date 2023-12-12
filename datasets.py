@@ -10,7 +10,7 @@ import os
 def create_dataset(data_dir, split=(800,100,100)):
     f_list = sorted(
         glob(
-            os.path.join(data_dir, '*.nii')
+            os.path.join(data_dir)
         )
     )
     
@@ -73,9 +73,9 @@ def create_dataset(data_dir, split=(800,100,100)):
         df_global['groups'].isin(valid_groups)
     ]
     
-    train_df.to_csv('./data/train-dataset_rh.csv')
-    test_df.to_csv('./data/test-dataset_rh.csv')
-    valid_df.to_csv('./data/valid-dataset_rh.csv')
+    train_df.to_csv('./data/train-dataset_rf.csv')
+    test_df.to_csv('./data/test-dataset_rf.csv')
+    valid_df.to_csv('./data/valid-dataset_rf.csv')
 
 class ClassifDataset(Dataset):
     '''

@@ -14,15 +14,15 @@
 
 source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv
 
-# /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u main.py --mode test --dataset dataset_rh_4class-jeanzay --labels pipelines --image_size 56 \
-# --c_dim 4 --batch_size 1 --data_dir data \
-# --sample_dir samples-4class --log_dir logs \
-# --model_save_dir models-4class --result_dir results --test_iters 50000
+/gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u main.py --mode test --dataset dataset_rh_4class-jeanzay --labels pipelines --image_size 56 \
+--c_dim 4 --batch_size 1 --data_dir data \
+--sample_dir samples-4class --log_dir logs \
+--model_save_dir models-4class --result_dir results --test_iters 50000
 
-/gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u main.py --mode test --dataset dataset_rh-jeanzay --labels pipelines --image_size 56 \
---c_dim 24 --batch_size 1 --data_dir data \
---sample_dir samples --log_dir logs \
---model_save_dir models --result_dir results --test_iters 200000
+# /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u main.py --mode test --dataset dataset_rh-jeanzay --labels pipelines --image_size 56 \
+# --c_dim 24 --batch_size 1 --data_dir data \
+# --sample_dir samples --log_dir logs \
+# --model_save_dir models --result_dir results --test_iters 200000
 
 # /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u /gpfswork/rech/gft/umh25bv/stargan/main.py \
 # --mode train --dataset dataset_rh-jeanzay --labels pipelines --image_size 56 \

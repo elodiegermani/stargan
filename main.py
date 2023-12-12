@@ -82,6 +82,7 @@ if __name__ == '__main__':
 
     # Test configuration.
     parser.add_argument('--test_iters', type=int, default=35000, help='test model from this step')
+    parser.add_argument('--model_param', type=str, default='/gpfswork/rech/gft/umh25bv/pipeline_classification/data/derived/model_b-64_lr-1e-04_epochs_100.pt', help='model to use for classif')
 
     # Miscellaneous.
     parser.add_argument('--num_workers', type=int, default=1)

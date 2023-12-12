@@ -40,6 +40,12 @@ def get_correlation(inim, outim):
         
         return corr_coeff
 
+def class_change(model_param, image):
+    model = torch.load(model_param, map_location='cpu')
+
+    classe = torch.max(model(image), 1)[1]
+
+    return(classe)
 
 class Solver(object):
     """Solver for training and testing StarGAN."""
@@ -74,6 +80,7 @@ class Solver(object):
 
         # Test configurations.
         self.test_iters = config.test_iters
+        self.model_param = config.model_param
 
         # Miscellaneous.
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -413,12 +420,19 @@ class Solver(object):
                     corr_orig_gen = get_correlation(img_orgX, img_genX)
                     corr_gen_target = get_correlation(img_genX, target_img)
 
+                    classe_orig = class_change(self.model_param, x_real.float())
+                    classe_target = class_change(self.model_param, target_data.float())
+                    classe_gen = class_change(self.model_param, gen_X_data.float())
+
                     df_img = pd.DataFrame({
                         'orig_label': [test_dataset.label_list[idx_org[0]]],
                         'target_label': [test_dataset.label_list[idx_trg]],
                         'orig-target': [corr_orig_target],
                         'orig-gen': [corr_orig_gen],
-                        'gen-target': [corr_gen_target]
+                        'gen-target': [corr_gen_target],
+                        'gen_pred':[classe_gen],
+                        'orig_pred':[classe_orig],
+                        'target_pred':[classe_target]
                         })
 
                     print(df_img)
@@ -429,9 +443,3 @@ class Solver(object):
                         ) 
 
                 df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
-
-                # Save the translated images.
-                # x_concat = torch.cat(x_fake_list, dim=3)
-                # result_path = os.path.join(self.result_dir, '{}-images.jpg'.format(i+1))
-                # save_image(self.denorm(x_concat.data.cpu()), result_path, nrow=1, padding=0)
-                # print('Saved real and fake images into {}...'.format(result_path))
