@@ -183,8 +183,7 @@ class Solver(object):
         package = 'lib.model'
         md = importlib.import_module(package)
 
-        model = md.Classifier3D(n_class=self.c_dim)
-        model.load_state_dict(torch.load(self.model_param, map_location="cpu"))
+        model = torch.load(self.model_param, map_location="cpu")
 
         classe = torch.max(model(image), 1)[1]
 
