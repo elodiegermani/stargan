@@ -187,8 +187,6 @@ class Solver(object):
         
         if len(image.shape) == 4:
             image= image.unsqueeze(0)
-        else:
-            image = torch.tensor(image)
             
         classe = torch.max(model(image.float().cpu()), 1)[1]
 
@@ -433,7 +431,7 @@ class Solver(object):
 
                     classe_orig = self.class_change(x_real)
                     classe_target = self.class_change(target_data)
-                    classe_gen = self.class_change(gen_X_data)
+                    classe_gen = self.class_change(gen_X)
 
                     df_img = pd.DataFrame({
                         'orig_label': [test_dataset.label_list[idx_org[0]]],
