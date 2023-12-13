@@ -14,7 +14,7 @@ import nibabel as nib
 import matplotlib.pyplot as plt 
 import pandas as pd
 import sys 
-sys.path.insert('../pipeline_classification')
+sys.path.insert('../pipeline_classification/src', '.')
 
 
 def get_correlation(inim, outim):
