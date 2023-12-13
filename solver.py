@@ -184,8 +184,9 @@ class Solver(object):
         md = importlib.import_module(package)
 
         model = torch.load(self.model_param, map_location="cpu")
-
-        classe = torch.max(model(torch.tensor(1,image).float().cpu()), 1)[1]
+        
+        image= image.unsqueeze(0)
+        classe = torch.max(model(image.float().cpu()), 1)[1]
 
         return(classe)
 
