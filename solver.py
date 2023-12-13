@@ -185,7 +185,8 @@ class Solver(object):
 
         model = torch.load(self.model_param, map_location="cpu")
         
-        image= image.unsqueeze(0)
+        if len(image.shape) == 4:
+            image= image.unsqueeze(0)
         classe = torch.max(model(image.float().cpu()), 1)[1]
 
         return(classe)
