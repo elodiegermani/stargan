@@ -13,8 +13,9 @@ import datetime
 import nibabel as nib
 import matplotlib.pyplot as plt 
 import pandas as pd
+import importlib
 import sys 
-sys.path.insert(0, '../pipeline_classification/src/lib')
+sys.path.insert(0, '../pipeline_classification/src')
 
 
 def get_correlation(inim, outim):
@@ -41,13 +42,6 @@ def get_correlation(inim, outim):
         corr_coeff = np.corrcoef(data1, data2)[0][1]
         
         return corr_coeff
-
-def class_change(model_param, image):
-    model = torch.load(model_param, map_location='cpu')
-
-    classe = torch.max(model(image), 1)[1]
-
-    return(classe)
 
 class Solver(object):
     """Solver for training and testing StarGAN."""
@@ -184,6 +178,17 @@ class Solver(object):
     def classification_loss(self, logit, target):
         """Compute binary or softmax cross entropy loss."""
         return F.cross_entropy(logit, target)
+
+    def class_change(self, image):
+        package = 'lib.model'
+        md = importlib.import_module(package)
+
+        model = md.Classifier3D(n_class=self.c_dim)
+        model.load_state_dict(torch.load(self.model_param, map_location="cpu"))
+
+        classe = torch.max(model(image), 1)[1]
+
+        return(classe)
 
     def train(self):
         """Train StarGAN within a single dataset."""
@@ -422,9 +427,9 @@ class Solver(object):
                     corr_orig_gen = get_correlation(img_orgX, img_genX)
                     corr_gen_target = get_correlation(img_genX, target_img)
 
-                    classe_orig = class_change(self.model_param, x_real.float())
-                    classe_target = class_change(self.model_param, target_data.float())
-                    classe_gen = class_change(self.model_param, gen_X_data.float())
+                    classe_orig = self.class_change(x_real.float())
+                    classe_target = self.class_change(target_data.float())
+                    classe_gen = self.class_change(gen_X_data.float())
 
                     df_img = pd.DataFrame({
                         'orig_label': [test_dataset.label_list[idx_org[0]]],
