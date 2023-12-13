@@ -428,9 +428,9 @@ class Solver(object):
                     corr_orig_gen = get_correlation(img_orgX, img_genX)
                     corr_gen_target = get_correlation(img_genX, target_img)
 
-                    classe_orig = self.class_change(x_real.float())
-                    classe_target = self.class_change(target_data.float())
-                    classe_gen = self.class_change(gen_X_data.float())
+                    classe_orig = self.class_change(x_real
+                    classe_target = self.class_change(target_data
+                    classe_gen = self.class_change(gen_X_data
 
                     df_img = pd.DataFrame({
                         'orig_label': [test_dataset.label_list[idx_org[0]]],
