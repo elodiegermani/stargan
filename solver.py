@@ -408,6 +408,10 @@ class Solver(object):
 
                     target_img = nib.Nifti1Image(np.array(target_data)[0,:,:,:], affine)
 
+                    nib.save(img_orgX, f'{self.sample_dir}/src_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.nii.gz')
+                    nib.save(img_genX, f'{self.sample_dir}/gen_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.nii.gz')
+                    nib.save(target_img, f'{self.sample_dir}/trg_img-{i}_orig-{test_dataset.label_list[idx_org[0]]}_target-{test_dataset.label_list[idx_trg]}.nii.gz')
+
                     if i%50==0:
 
                         plotting.plot_glass_brain(img_orgX, figure=fig, axes=ax[0],
@@ -451,4 +455,4 @@ class Solver(object):
                         ignore_index=True
                         ) 
 
-                df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
+                #df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
