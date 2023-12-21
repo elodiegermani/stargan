@@ -79,8 +79,8 @@ def preprocessing(data_dir, output_dir):
     img_list, input_dir = get_imlist(op.join(data_dir))
         
     # Create dirs to save images
-    if not op.isdir(op.join(output_dir, f'resampled-masked')):
-        os.mkdir(op.join(output_dir, f'resampled-masked'))
+    if not op.isdir(op.join(output_dir, f'normalized')):
+        os.mkdir(op.join(output_dir, f'normalized'))
 
     standard = datasets.load_mni152_template(resolution=4)
     target_affine = standard.affine.copy()
@@ -130,11 +130,11 @@ def preprocessing(data_dir, output_dir):
             
             norm_img_data = res_masked_img_data.copy().astype(float)
             norm_img_data = np.nan_to_num(norm_img_data)
-            #norm_img_data *= 1.0/np.abs(norm_img_data).max()
+            norm_img_data *= 1.0/np.abs(norm_img_data).max()
             norm_img_data = norm_img_data[0:48,0:56,0:48]
             norm_img = nib.Nifti1Image(norm_img_data, res_img.affine)
             
-            nib.save(norm_img, op.join(output_dir, f'resampled-masked', op.basename(img))) # Save original image resampled and normalized
+            nib.save(norm_img, op.join(output_dir, f'normalized', op.basename(img))) # Save original image resampled and normalized
 
             print(f"Image {idx} : DONE.")
 
@@ -144,7 +144,7 @@ def preprocessing(data_dir, output_dir):
             continue
 
 if __name__ == '__main__':
-    data_dir = '/gpfswork/rech/gft/umh25bv/hcp_many_pipelines/group*right-hand*con.nii*'
+    data_dir = '/gpfswork/rech/gft/umh25bv/hcp_many_pipelines/group*con.nii*'
     output_dir = '/gpfswork/rech/gft/umh25bv/hcp_many_pipelines_preprocess'
     
     preprocessing(data_dir, output_dir)
