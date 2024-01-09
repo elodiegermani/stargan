@@ -455,4 +455,4 @@ class Solver(object):
                         ignore_index=True
                         ) 
 
-                #df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
+                df_metrics.to_csv(f'{self.sample_dir}/df_metrics.csv')
