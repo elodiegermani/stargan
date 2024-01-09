@@ -38,7 +38,7 @@ source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh
 # --model_save_dir models-4class --result_dir results-4class
 
 /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u /gpfswork/rech/gft/umh25bv/stargan/main.py \
---mode train --dataset dataset_rh_2class-jeanzay --labels pipelines --image_size 56 \
---c_dim 2 --batch_size 16 --data_dir data \
---sample_dir samples-2class --log_dir logs \
---model_save_dir models-2class --result_dir results-2class
+--mode train --dataset dataset_rh_4class_30grp-jeanzay --labels pipelines --image_size 56 \
+--c_dim 4 --batch_size 16 --data_dir data \
+--sample_dir samples-4class-30grp --log_dir logs \
+--model_save_dir models-4class-30grp --result_dir results-4class-30grp
