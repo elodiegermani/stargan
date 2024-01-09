@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=stargan-2class # nom du job
+#SBATCH --job-name=stargan-4class-30grp # nom du job
 #SBATCH --ntasks=1                   # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -7,8 +7,8 @@
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --distribution=block:block   # we pin the tasks on contiguous cores
 #SBATCH --time=32:00:00              # maximum execution time (HH:MM:SS)
-#SBATCH --output=stargan-2class%j.out # output file name
-#SBATCH --error=stargan-2class%j.err  # error file name
+#SBATCH --output=stargan-4class-30grp%j.out # output file name
+#SBATCH --error=stargan-4class-30grp%j.err  # error file name
 #SBATCH --qos=qos_gpu-t4
 
 source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv
