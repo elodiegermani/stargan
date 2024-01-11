@@ -19,4 +19,4 @@ source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh
 --mode test --dataset dataset_rh_2class_spm-jeanzay --labels pipelines --image_size 56 \
 --c_dim 2 --batch_size 1 --data_dir data \
 --sample_dir samples-2class-spm --log_dir logs \
---model_save_dir models-2class-spm --test-iter 50000 
+--model_save_dir models-2class-spm --resume_iters 50000 
