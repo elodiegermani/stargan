@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=stargan-2class-spm # nom du job
+#SBATCH --job-name=stargan-2class # nom du job
 #SBATCH --ntasks=1                   # number of MP tasks
 #SBATCH --ntasks-per-node=1          # number of MPI tasks per node
 #SBATCH --gres=gpu:1                 # number of GPUs per node
@@ -16,8 +16,8 @@ source /gpfswork/rech/gft/umh25bv/miniconda3/bin/activate /gpfswork/rech/gft/umh
 # /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u preprocessing.py
 
 /gpfswork/rech/gft/umh25bv/miniconda3/envs/workEnv/bin/python3 -u /gpfswork/rech/gft/umh25bv/stargan/src/main.py \
---mode train --dataset dataset_rh_2class_spm-jeanzay --labels pipelines --image_size 56 \
+--mode train --dataset dataset_rh_2class-jeanzay --labels pipelines --image_size 56 \
 --c_dim 2 --batch_size 16 --data_dir data \
---sample_dir samples-2class-spm --log_dir logs \
---model_save_dir models-2class-spm 
+--sample_dir samples-2class --log_dir logs \
+--model_save_dir models-2class
 #--test_iters 50000 
