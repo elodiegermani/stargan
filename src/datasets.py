@@ -73,9 +73,9 @@ def create_dataset(data_dir, split=(800,100,100)):
         df_global['groups'].isin(valid_groups)
     ]
     
-    train_df.to_csv('./data/train-dataset_rf.csv')
-    test_df.to_csv('./data/test-dataset_rf.csv')
-    valid_df.to_csv('./data/valid-dataset_rf.csv')
+    train_df.to_csv('./data/gen-test-dataset_rh.csv')
+    #test_df.to_csv('./data/test-dataset_rh.csv')
+    #valid_df.to_csv('./data/valid-dataset_rh.csv')
 
 class ClassifDataset(Dataset):
     '''
